@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from random import *
 import pyperclip
+import json
 
 FONT_NAME = "Arial"
 
@@ -35,6 +36,12 @@ def save():
     website = website_entry.get()
     email = email_entry.get()
     password = password_entry.get()
+    new_data = {
+        website: {
+            "e-mail": email,
+            "password": password
+        }
+    }
 
     if len(password) == 0 or len(website) == 0 or len(email) == 0:
         messagebox.showinfo(title="Oops", message="Please don't leave any fields empty!")
@@ -46,6 +53,18 @@ def save():
             with open("data.txt", mode="a") as file:
                 file.writelines(f"{website} | {email} | {password}" + "\n")
                 file.close()
+
+            try:
+                with open("data.json", mode="r") as data_file:
+                    data = json.load(data_file)
+            except FileNotFoundError:
+                with open("data.json", mode="w") as data_file:
+                    json.dump(new_data, data_file, indent=4)
+            else:
+                data.update(new_data)
+
+                with open("data.json", mode="w") as data_file:
+                    json.dump(data, data_file, indent=4)
 
             website_entry.delete(0, 'end')
             email_entry.delete(0, 'end')
