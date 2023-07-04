@@ -6,6 +6,23 @@ import json
 
 FONT_NAME = "Arial"
 
+# ---------------------------- FIND LOGIN ------------------------------- #
+def find_login():
+    website = website_entry.get()
+
+    if len(website) != 0:
+        try:
+            with open("data.json", mode="r") as json_file:
+                data = json.load(json_file)
+                website_data = (data[website])
+        except FileNotFoundError:
+            messagebox.showerror(title="Error", message="No Data File Found")
+        except KeyError:
+            messagebox.showerror(title="Error", message="No details for the website exists")
+        else:
+            messagebox.showinfo(title=website, message=f"E-mail: {website_data['e-mail']} \nPassword: {website_data['password']}")
+    else:
+        messagebox.showinfo(title="Error", message="The website field is empty")
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
@@ -93,8 +110,11 @@ password_label.grid(row=3, column=0)
 generate_password_btn = Button(text="Generate Password", command=generate_password)
 generate_password_btn.grid(row=3, column=2)
 
-website_entry = Entry(width=50)
-website_entry.grid(row=1, column=1, columnspan=2)
+search_login_btn = Button(text="Search", command=find_login, width=14)
+search_login_btn.grid(row=1, column=2)
+
+website_entry = Entry(width=32)
+website_entry.grid(row=1, column=1, columnspan=1)
 website_entry.focus()
 
 email_entry = Entry(width=50)
